@@ -1,91 +1,132 @@
-# Conductor 🎸🪄
+# Conductor 🎸⚡️
 
-> **Autonomous AI Sound Designer & Dynamic DSP Synthesizer**
+> **Autonomous AI Guitar Sound Designer & Real-Time Neural Amp Processor**
 
-Conductor is a next-generation AI-powered guitar and audio workstation that bridges neural amp modeling, real-time DSP, and conversational sound design. It translates natural language tone requests (e.g., *"give me an 80s cranked British high-gain sound with a tight low end"*) into authentic Neural Amp Modeler (NAM) profiles and dynamic DSP pedalboard chains in real time.
+Conductor is an intelligent, real-time guitar audio plugin and standalone macOS workstation that translates natural language tone descriptions into authentic neural amp models, studio acoustics, and dynamic analog pedalboard chains. 
 
-Conductor ships as both a native **macOS Audio Plugin & Standalone App** (AU / VST3 / Standalone built with JUCE 8 and C++20) and a modular **Python AI Engine & Web Dashboard** (FastAPI, ASR voice control, and low-latency audio streaming).
+Powered by **JUCE 8**, **C++20**, **Neural Amp Modeler Core (NAM)**, and **Nebius AI Studio**, Conductor bridges natural language conversation and low-latency audio processing—letting guitarists type requests like *"80s stadium metal with tight delay and mid-boost"* or *"glassy Mayer clean with warm room reverb"* and instantly hear an authentic, fully staged rig.
 
 ---
 
 ## Key Features
 
-- **Neural Amp Modeling (NAM)**: Powered by `NeuralAmpModelerCore` for ultra-realistic tube amp response and speaker cabinet IR simulation.
-- **Conversational Tone Generation**: Prompt-driven tone engineering using Nebius AI Studio (`DeepSeek-V4.1-Flash`) to map musical intent into concrete amp parameters and pedal configs.
-- **TONE3000 Catalog Integration**: Automatic searching, matching, and downloading of community and studio NAM captures.
-- **Real-Time C++ Audio Plugin (JUCE 8)**:
-  - Formats: AudioUnit (AU), VST3, and macOS Standalone application.
-  - Interactive gear rack with modular pedal cards and parameter sliders.
-  - Low-latency chromatic pitch detection and tuner display.
-  - Peak and RMS audio telemetry metering.
-  - Integrated live debug console and Siri-style AI dialog overlay.
-- **Seamless Live DSP Crossfading**: Glitch-free, equal-power crossfading when swapping profiles or adjusting parameters mid-performance.
-- **Dual-Channel Live Hardware Streaming**: Dedicated 2-in / 2-out hardware routing (Channel 0: voice control microphone; Channel 1: dry guitar DI) with instant duplex audio pass-through.
-- **Web Dashboard & REST API**: Clean browser UI and FastAPI backend for headless rigs, remote control, and automated audio batch processing.
+- **Neural Amp Modeling (NAM)**: Powered by `NeuralAmpModelerCore` for state-of-the-art machine-learning amplifier and speaker cabinet emulation with near-zero latency.
+- **Conversational Tone Architect**: Conversational sound engineering via Nebius AI Studio (`DeepSeek-V4.1-Flash` or OpenAI-compatible endpoints) that analyzes musical genre, artist tone recipes, and staging semantics.
+- **TONE3000 Ecosystem Integration**: Embedded catalog mapping of community and studio NAM captures across iconic amplifiers, overdrives, fuzzes, modulations, and reverbs with automatic background model caching.
+- **4-Slot Hardware Rack**:
+  - **Slot 0 & Slot 1 (Stompboxes)**: Pre-amp pedals (Overdrive, Fuzz, Distortion, Chorus, Phaser, Compressor, Gate).
+  - **Slot 2 (Amplifier)**: High-headroom cleans to crushing high-gain tube heads with dynamic tone stacks (Gain, Bass, Mid, Treble, Output).
+  - **Slot 3 (Space / Cabinet)**: Studio acoustic rooms, impulse responses (IRs), and vintage tape echoes.
+- **Intelligent Audio Telemetry & Routing**:
+  - **Smart Input Detection**: Automatically detects active instrument signal between audio interface input channels (Auto, Ch 1, Ch 2, or Sum).
+  - **Chromatic Pitch Tuner**: Ultra-responsive pitch detection using time-domain autocorrelation with cents deviation and note lock indicator.
+  - **Calibrated Level Metering**: Multi-stage peak and RMS metering with dBFS readouts and clip detection.
+- **Live Performance UI & HUD**:
+  - **Siri-Style AI Dialog Overlay**: Pulsing holographic status orb, matched semantic tags, and architectural reasoning display.
+  - **Reactive Signal Flow**: High-visibility audio patch cables behind gear cards that illuminate dynamically with your playing intensity.
+  - **New Tone vs. Edit Tone Modes**: Synthesize an entirely new rig from scratch or iteratively tweak the active tone (e.g. *"add more gain and brighten the top end"*).
+  - **Live Debug Console**: Collapsible real-time diagnostic console streaming internal DSP and API events.
 
 ---
 
-## Repository Layout
+## Architecture Overview
+
+```text
+                      ┌──────────────────────────────────────────────┐
+                      │             User Prompt / Voice              │
+                      │  "80s high-gain lead with tight mid-boost"   │
+                      └──────────────────────┬───────────────────────┘
+                                             │
+                                             ▼
+                      ┌──────────────────────────────────────────────┐
+                      │         Nebius AI Studio (LLM Client)        │
+                      │    DeepSeek-V4.1-Flash / OpenAI Protocol     │
+                      └──────────────────────┬───────────────────────┘
+                                             │
+                       Structured JSON Rig Recipe & Sonic Rationale
+                                             │
+                                             ▼
+                      ┌──────────────────────────────────────────────┐
+                      │              TONE3000 Catalog                │
+                      │      ModelCache & Background Fetcher         │
+                      └──────────────────────┬───────────────────────┘
+                                             │
+                                             ▼
+┌──────────────────┐   ┌────────────────────────────────────────────────────────┐   ┌───────────────────┐
+│ Guitar Input     │──▶│              Conductor NAM Series Chain                │──▶│ Stereo Output     │
+│ (Auto Ch Detect) │   │  [Slot 0: Pedal] ➔ [Slot 1: Pedal] ➔ [Slot 2: Amp] ... │   │ (Main Out / Cans) │
+└────────┬─────────┘   └────────────────────────────┬───────────────────────────┘   └───────────────────┘
+         │                                          │
+         ▼                                          ▼
+┌──────────────────┐                       ┌────────────────────────────────────┐
+│ Autocorrelation  │                       │         Telemetry Engine           │
+│ Chromatic Tuner  │                       │   Peak / RMS Meters & Dynamic Glow │
+└──────────────────┘                       └────────────────────────────────────┘
+```
+
+---
+
+## Repository Structure
 
 ```text
 Conductor/
-├── Source/                  # C++ JUCE 8 Plugin & Standalone Source
-│   ├── AI/                  # LLM client, model caching, and Tone3000 catalog loader
-│   ├── Audio/               # NAM DSP chain, tuner detector, and audio telemetry
-│   ├── UI/                  # LookAndFeel, pedalboard rack, meters, and debug console
-│   ├── PluginProcessor.cpp  # Audio processor implementation
-│   └── PluginEditor.cpp     # Main plugin GUI implementation
-├── conductor/               # Python AI Engine & DSP Backend
-│   ├── asr_engine.py        # Voice command transcription (speech-to-text)
-│   ├── audio_io.py          # Native hardware duplex audio stream & file processing
-│   ├── config.py            # Environment and runtime configuration
-│   ├── dsp_engine.py        # Equal-power crossfading DSP pedalboard engine
-│   ├── guitar_engine.py     # Intent-to-DSP graph generator
-│   ├── nebius_client.py     # Nebius AI Studio LLM client
-│   ├── schemas.py           # Pydantic data schemas and graph definitions
-│   ├── server.py            # FastAPI REST API and static web server
-│   └── tone3000.py          # TONE3000 API client & fallback captures
-├── web/                     # Web dashboard interface (HTML / CSS / JS)
-├── demo_outputs/            # Pre-rendered audio demonstration results
-├── test_input/              # Reference test audio files (clean DI guitar)
-├── tests/                   # Pytest automated test suite
-├── Libs/                    # Git submodules
-│   ├── JUCE/                # JUCE 8 framework
-│   └── NeuralAmpModelerCore/# Neural Amp Modeler C++ core engine
-├── CMakeLists.txt           # CMake build configuration for C++ targets
-├── conductor_core.py        # Python standalone CLI & hardware stream harness
-├── demo.py                  # Self-contained audio demonstration script
-└── .env.example             # Configuration and API key template
+├── Source/
+│   ├── AI/
+│   │   ├── LLMClient.h             # Async Nebius AI Studio client & prompt handler
+│   │   ├── ModelCache.h            # Local disk cache & background NAM model fetcher
+│   │   └── Tone3000Catalog.h       # Curated TONE3000 gear catalog & tag resolution
+│   ├── Audio/
+│   │   ├── NamChain.h              # 4-slot NAM processing engine & EQ tone stack
+│   │   ├── Telemetry.h             # Lock-free atomic metering and pitch telemetry
+│   │   └── TunerDetector.h         # Autocorrelation chromatic pitch detector
+│   ├── UI/
+│   │   ├── AIDialogOverlay.h       # Siri-style holographic synthesis overlay
+│   │   ├── ConductorLookAndFeel.h  # Aerospace titanium styling & rotary knob renderer
+│   │   ├── DebugConsoleComponent.h # Embedded live diagnostic terminal
+│   │   ├── DebugLog.h              # Thread-safe ring buffer log broadcaster
+│   │   ├── LevelMeterComponent.h   # Multi-segment peak / RMS audio meter
+│   │   ├── PedalCardComponent.h    # Gear rack slot cards, dynamic knobs & bypass
+│   │   ├── StandaloneAudioHelper.h # Standalone audio device & input unmuting helper
+│   │   └── TunerComponent.h        # Circular tuner HUD with strobe-style needle
+│   ├── PluginProcessor.cpp         # Main JUCE AudioProcessor & lifecycle hooks
+│   ├── PluginProcessor.h           # Audio processor definition
+│   ├── PluginEditor.cpp            # Main JUCE AudioProcessorEditor & UI layout
+│   └── PluginEditor.h              # Editor definition
+├── Libs/                           # Git Submodules
+│   ├── JUCE/                       # JUCE 8 framework
+│   └── NeuralAmpModelerCore/       # Neural Amp Modeler C++ engine
+├── CMakeLists.txt                  # Modern CMake build configuration (C++20)
+└── .env.example                    # Template for API keys and endpoint settings
 ```
 
 ---
 
 ## Getting Started
 
-### 1. Clone the Repository
+### 1. Clone the Repository with Submodules
 
-Clone with submodules to pull down `JUCE` and `NeuralAmpModelerCore`:
+Conductor relies on `JUCE` and `NeuralAmpModelerCore` as git submodules:
 
 ```bash
 git clone --recurse-submodules https://github.com/jdawg0507/conductor.git
 cd conductor
 ```
 
-If already cloned without submodules, initialize them:
+If you cloned without `--recurse-submodules`, initialize them with:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-### 2. Configure Environment Variables
+### 2. Configure Environment Credentials
 
-Copy the example environment file and configure your API keys:
+Create a `.env` file in the project root based on `.env.example`:
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your credentials:
+Add your Nebius AI Studio and TONE3000 keys:
 
 ```ini
 NEBIUS_API_KEY=your_nebius_api_key_here
@@ -95,37 +136,51 @@ TONE3000_API_KEY=your_tone3000_api_key_here
 TONE3000_PUBLISHABLE_KEY=your_tone3000_publishable_key_here
 ```
 
+*(Note: If no API key is provided, Conductor gracefully falls back to local heuristic matching using its built-in offline capture catalog).*
+
 ---
 
-## Building the C++ Plugin & Standalone App
+## Building from Source
 
 ### Prerequisites
-- macOS 12+ with Apple Clang / Xcode Command Line Tools
-- CMake 3.22 or higher
-- Ninja (recommended)
-
-### Build Steps
+- **macOS**: macOS 12 (Monterey) or higher
+- **Compiler**: Apple Clang with C++20 support (Xcode Command Line Tools)
+- **Build Tools**: CMake 3.22+ and Ninja
 
 ```bash
-# Generate build configuration
+brew install cmake ninja
+```
+
+### Build Commands
+
+```bash
+# Configure the build directory with Ninja
 cmake -B build -G Ninja
 
-# Compile plugins and standalone application
+# Compile all targets (Standalone, AU, VST3)
 cmake --build build
 ```
 
-Compiled targets will be placed in `build/Conductor_artefacts/`:
-- **Standalone App**: `build/Conductor_artefacts/Standalone/Conductor.app`
+Compiled deliverables are located in `build/Conductor_artefacts/`:
+- **macOS Standalone Application**: `build/Conductor_artefacts/Standalone/Conductor.app`
 - **AudioUnit (AU)**: `build/Conductor_artefacts/AU/Conductor.component`
-- **VST3**: `build/Conductor_artefacts/VST3/Conductor.vst3`
+- **VST3 Plugin**: `build/Conductor_artefacts/VST3/Conductor.vst3`
 
-### Run Standalone App
+---
+
+## Running & Validating
+
+### Launch the Standalone Application
 
 ```bash
 open build/Conductor_artefacts/Standalone/Conductor.app
 ```
 
-### Validate AudioUnit
+Click **AUDIO SETUP** in the top navigation bar to select your audio interface (e.g., Focusrite Scarlett, Universal Audio Apollo, PreSonus AudioBox), sample rate, and buffer size.
+
+### Validate the AudioUnit (AU)
+
+Validate the plugin using Apple's `auval` utility:
 
 ```bash
 auval -v aufx Cnd1 Cond
@@ -133,84 +188,23 @@ auval -v aufx Cnd1 Cond
 
 ---
 
-## Python AI Engine & Web Dashboard
+## Usage Guide
 
-### Prerequisites
-- Python 3.10+ (tested through 3.14)
-- `pip` or virtualenv tool
-
-### Setup Python Environment
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt  # or install fastapi uvicorn soundfile numpy rich pedalboard openai
-```
-
-### Run the Web Dashboard & API Server
-
-```bash
-PYTHONPATH=. python3 conductor_core.py --server
-```
-
-Open [http://localhost:8000](http://localhost:8000) in your browser to interact with the Conductor web console.
-
-### Run Hardware Live Streaming Harness
-
-To stream live guitar and voice from an audio interface (e.g., PreSonus AudioBox iTwo or Focusrite Scarlett):
-
-```bash
-# List available audio devices
-PYTHONPATH=. python3 conductor_core.py --list-devices
-
-# Start duplex stream on device index 0
-PYTHONPATH=. python3 conductor_core.py --device 0 --mic-ch 0 --guitar-ch 1
-```
-
-### Run the Audio Demo Script
-
-Generates synthetic guitar riffs, applies AI tone designs via Nebius & TONE3000, and verifies equal-power crossfading:
-
-```bash
-PYTHONPATH=. python3 demo.py
-```
-
-Processed output files will be written to `demo_outputs/`.
-
----
-
-## Running Automated Tests
-
-Run the test suite using `pytest`:
-
-```bash
-PYTHONPATH=. pytest
-```
-
----
-
-## Architecture Overview
-
-```text
-[ Microphone (Ch 0) ] ──> Speech ASR Engine ──> Voice Command Text
-                                                        │
-                                                        ▼
-                                            Nebius AI Studio (LLM)
-                                                        │
-                                                        ▼
-[ Dry Guitar DI (Ch 1) ] ──> [ Equal-Power Crossfade DSP Engine ] ──> [ Stereo Output ]
-                                     │                     ▲
-                                     ▼                     │
-                              TONE3000 Catalog ──> NAM Core Models
-```
-
-1. **Input Ingestion**: Voice input is transcribed by the speech engine, while instrument audio feeds into the low-latency DSP chain.
-2. **Intent Translation**: Nebius AI Studio evaluates acoustic intent and queries the TONE3000 catalog for relevant neural amp captures.
-3. **Graph Construction**: Generates a typed DSP configuration (gain, EQ tonestack, compressor, delay, reverb).
-4. **Smooth Handoff**: The crossfading engine executes an equal-power transition between the previous and new tone profiles without clicks or dropouts.
+1. **Describe a Tone**: Type your sonic vision into the top prompt bar:
+   - *"Texas blues lead with subtle tube overdrive and warm spring reverb"*
+   - *"Tight percussive djent rhythm with noise gate and mid-focused bite"*
+   - *"Glassy 80s chorus clean with lush stereo plate"*
+2. **Conduct Tone**: Press Enter or click **CONDUCT TONE**. The AI overlay analyzes the request, selects appropriate models from the TONE3000 catalog, stages the 4 rack slots, dials in starting knob positions, and displays its design rationale.
+3. **Refine & Tweak**:
+   - Turn individual knobs on any active stompbox or amp card.
+   - Click **ENGAGE** on any pedal card to bypass or re-activate it.
+   - Switch mode to **EDIT TONE** to iteratively adjust the active sound (e.g., *"give it a bit more mid-presence and lower the gain"*).
+4. **Input Selection**: Click **IN: AUTO** to cycle between smart signal detection, Channel 1, Channel 2, or stereo summing.
 
 ---
 
 ## License
 
-Conductor is distributed under the Apache-2.0 or MIT License. See individual licenses in `Libs/JUCE` and `Libs/NeuralAmpModelerCore` for third-party library terms.
+Conductor is open source under the MIT License. Third-party dependencies are licensed under their respective terms:
+- [JUCE 8](file:///Users/jdawg/Conductor/Libs/JUCE/LICENSE.md) — JUCE License / GPLv3
+- [NeuralAmpModelerCore](file:///Users/jdawg/Conductor/Libs/NeuralAmpModelerCore/LICENSE) — Apache-2.0
