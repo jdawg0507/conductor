@@ -1,0 +1,1714 @@
+/* Conductor Studio - High-End Audio & TONE3000 Interface */
+:root {
+    --bg-dark: #0a0d14;
+    --chassis-bg: #121620;
+    --chassis-metal: #181d2a;
+    --chassis-border: #262f44;
+    --faceplate-bg: #0e121b;
+    --accent-amber: #ff9e00;
+    --accent-cyan: #00d9f5;
+    --accent-gold: #ffd166;
+    --text-primary: #f0f4f8;
+    --text-muted: #8392a7;
+    --text-dim: #4d5b72;
+    --knob-track: #1e2638;
+    --knob-cap: #2a344d;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(ellipse at 50% 0%, rgba(255, 158, 0, 0.06) 0%, transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(0, 217, 245, 0.04) 0%, transparent 50%);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+}
+
+.studio-wrapper {
+    max-width: 1440px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ==========================================================================
+   Header & Brand
+   ========================================================================== */
+.studio-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    background: rgba(18, 22, 32, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--chassis-border);
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.brand-jewel {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #000;
+    border: 2px solid #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.jewel-core {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-amber);
+    box-shadow: 0 0 14px var(--accent-amber), inset 0 2px 3px rgba(255,255,255,0.7);
+    transition: all 0.3s ease;
+}
+
+.jewel-core.direct {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 14px var(--accent-cyan), inset 0 2px 3px rgba(255,255,255,0.7);
+}
+
+.brand-titles h1 {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #fff;
+}
+
+.brand-titles h1 span {
+    color: var(--accent-amber);
+}
+
+.brand-tagline {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+/* Master Signal Routing Switch */
+.master-routing-control {
+    display: flex;
+    align-items: center;
+}
+
+.routing-switch-card {
+    display: flex;
+    align-items: center;
+    background: #090c13;
+    border: 1px solid var(--chassis-border);
+    border-radius: 30px;
+    padding: 4px;
+    gap: 8px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.7);
+}
+
+.routing-label {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--text-dim);
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding-left: 14px;
+}
+
+.routing-toggle-group {
+    display: flex;
+    background: #141926;
+    border-radius: 24px;
+    padding: 3px;
+    gap: 4px;
+}
+
+.mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 18px;
+    border-radius: 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.mode-btn:hover {
+    color: #fff;
+}
+
+.mode-btn.active#modeDirectBtn {
+    background: var(--accent-cyan);
+    color: #06151f;
+    box-shadow: 0 0 16px rgba(0, 217, 245, 0.4);
+}
+
+.mode-btn.active#modeTone3000Btn {
+    background: var(--accent-amber);
+    color: #1a0f00;
+    box-shadow: 0 0 16px rgba(255, 158, 0, 0.4);
+}
+
+/* Header Actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.engine-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(0, 217, 245, 0.08);
+    border: 1px solid rgba(0, 217, 245, 0.2);
+    border-radius: 8px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--accent-cyan);
+}
+
+.pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 8px var(--accent-cyan);
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.btn-hardware {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--chassis-border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-hardware:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================================================
+   Amp Chassis & Tactile Faceplate
+   ========================================================================== */
+.amp-chassis {
+    position: relative;
+    background: linear-gradient(180deg, #1b212f 0%, #10141e 100%);
+    border: 2px solid #2a3449;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+
+.chassis-trim {
+    position: absolute;
+    inset: 10px;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+}
+
+.corner-screw {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle, #5a667d 20%, #1e2430 80%);
+    border-radius: 50%;
+    border: 1px solid #131720;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.4);
+}
+
+.corner-screw.top-left { top: 6px; left: 6px; }
+.corner-screw.top-right { top: 6px; right: 6px; }
+.corner-screw.bottom-left { bottom: 6px; left: 6px; }
+.corner-screw.bottom-right { bottom: 6px; right: 6px; }
+
+.faceplate {
+    background: linear-gradient(180deg, #0c1017 0%, #080a0f 100%);
+    border: 1px solid #1f2738;
+    border-radius: 12px;
+    padding: 24px 30px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
+}
+
+.faceplate-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+}
+
+.amp-vintage-badge {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--accent-amber);
+    background: rgba(255, 158, 0, 0.1);
+    border: 1px solid rgba(255, 158, 0, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-bottom: 6px;
+}
+
+.amp-title-group h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+.amp-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Direct DI Banner */
+.direct-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 217, 245, 0.08);
+    border: 1px solid rgba(0, 217, 245, 0.3);
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+.direct-badge {
+    font-size: 11px;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: #06151f;
+    background: var(--accent-cyan);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+}
+
+.direct-desc {
+    font-size: 12px;
+    color: var(--accent-cyan);
+}
+
+/* Pilot Jewel */
+.amp-pilot-light {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.pilot-glass {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fff 0%, var(--accent-amber) 60%, #b36b00 100%);
+    box-shadow: 0 0 16px var(--accent-amber), inset 0 1px 2px rgba(255,255,255,0.8);
+    border: 1px solid #734500;
+    transition: all 0.3s;
+}
+
+.amp-pilot-light.direct .pilot-glass {
+    background: radial-gradient(circle at 35% 35%, #fff 0%, var(--accent-cyan) 60%, #008fa1 100%);
+    box-shadow: 0 0 16px var(--accent-cyan), inset 0 1px 2px rgba(255,255,255,0.8);
+    border: 1px solid #005c68;
+}
+
+.pilot-label {
+    font-size: 8px;
+    font-family: var(--font-mono);
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+}
+
+/* Tonestack Rack & Rotary Dials */
+.tonestack-rack {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+.knob-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(18, 23, 34, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 16px 10px;
+    transition: border-color 0.2s ease;
+}
+
+.knob-cell:hover {
+    border-color: rgba(255, 158, 0, 0.3);
+}
+
+.knob-label {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.rotary-slider-wrap {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.rotary-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #242c3e 40%, #151a24 100%);
+    border: 2px solid #364259;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), inset 0 2px 4px rgba(255,255,255,0.1);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.rotary-slider:hover {
+    border-color: var(--accent-amber);
+}
+
+.rotary-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent-amber);
+    box-shadow: 0 0 10px var(--accent-amber);
+    cursor: pointer;
+}
+
+.rotary-slider.master::-webkit-slider-thumb {
+    background: var(--accent-gold);
+    box-shadow: 0 0 10px var(--accent-gold);
+}
+
+.knob-val-badge {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    background: #090c13;
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--chassis-border);
+    margin-bottom: 6px;
+}
+
+.knob-subtext {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   AI Architect & Springboard Section
+   ========================================================================== */
+.ai-architect-section {
+    background: var(--chassis-bg);
+    border: 1px solid var(--chassis-border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.architect-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.architect-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.spark-icon {
+    font-size: 16px;
+}
+
+.architect-title h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.architect-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.prompt-input-row {
+    display: flex;
+}
+
+.input-container {
+    display: flex;
+    width: 100%;
+    background: #090d14;
+    border: 1px solid #283348;
+    border-radius: 10px;
+    padding: 6px 6px 6px 16px;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.2s;
+}
+
+.input-container:focus-within {
+    border-color: var(--accent-amber);
+    box-shadow: 0 0 16px rgba(255, 158, 0, 0.15);
+}
+
+.input-container input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 14px;
+}
+
+.input-container input::placeholder {
+    color: var(--text-dim);
+}
+
+.btn-synthesize {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent-amber) 0%, #ff6b00 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 9px 20px;
+    color: #1a0f00;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-synthesize:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(255, 158, 0, 0.4);
+}
+
+.springboard-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip {
+    background: #151a26;
+    border: 1px solid var(--chassis-border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chip:hover {
+    background: #21293c;
+    color: #fff;
+    border-color: rgba(255, 158, 0, 0.4);
+    transform: translateY(-1px);
+}
+
+/* AI Rationale Card */
+.ai-rationale-card {
+    background: rgba(255, 158, 0, 0.04);
+    border: 1px solid rgba(255, 158, 0, 0.2);
+    border-radius: 10px;
+    padding: 14px 18px;
+}
+
+.rationale-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.ai-badge {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--accent-amber);
+    letter-spacing: 1px;
+}
+
+.emotional-tags-row {
+    display: flex;
+    gap: 6px;
+}
+
+.tag-badge {
+    font-size: 10px;
+    background: rgba(255, 158, 0, 0.12);
+    border: 1px solid rgba(255, 158, 0, 0.3);
+    color: var(--accent-gold);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.rationale-body {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   TONE3000 Patch Browser & Library
+   ========================================================================== */
+.patch-browser-section {
+    background: var(--chassis-bg);
+    border: 1px solid var(--chassis-border);
+    border-radius: 14px;
+    padding: 22px 26px;
+}
+
+.browser-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.browser-title-group h3 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.browser-title-group p {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.browser-search-wrap {
+    position: relative;
+    width: 320px;
+}
+
+.browser-search-wrap input {
+    width: 100%;
+    background: #090d14;
+    border: 1px solid var(--chassis-border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #fff;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.browser-search-wrap input:focus {
+    border-color: var(--accent-cyan);
+}
+
+.search-spinner {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: spin 1s infinite linear;
+    font-size: 12px;
+}
+
+@keyframes spin {
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+.patches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.patch-card {
+    background: #141926;
+    border: 1px solid var(--chassis-border);
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.patch-card:hover {
+    border-color: var(--accent-amber);
+    background: #1b2234;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.patch-card.active {
+    border-color: var(--accent-amber);
+    background: rgba(255, 158, 0, 0.08);
+    box-shadow: 0 0 16px rgba(255, 158, 0, 0.2);
+}
+
+.patch-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.patch-gain-badge {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--accent-gold);
+}
+
+.patch-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.patch-model {
+    font-size: 11px;
+    color: var(--accent-cyan);
+    margin-bottom: 12px;
+}
+
+.patch-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.patch-tag {
+    font-size: 10px;
+    background: #0a0d14;
+    color: var(--text-dim);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   Test Audio Scrubber
+   ========================================================================== */
+.test-scrubber-section {
+    background: var(--chassis-bg);
+    border: 1px solid var(--chassis-border);
+    border-radius: 14px;
+    padding: 16px 24px;
+}
+
+.scrubber-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.scrubber-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.scrubber-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.scrubber-title .subtext {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.scrubber-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.test-select {
+    background: #090d14;
+    border: 1px solid var(--chassis-border);
+    color: #fff;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    outline: none;
+}
+
+.btn-scrubber-play, .btn-scrubber-loop, .btn-scrubber-mode {
+    background: #171d2b;
+    border: 1px solid var(--chassis-border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-scrubber-play:hover, .btn-scrubber-loop:hover {
+    background: #252f44;
+}
+
+.btn-scrubber-loop.active {
+    background: rgba(0, 217, 245, 0.15);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+.btn-scrubber-mode {
+    background: rgba(255, 158, 0, 0.15);
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+}
+
+.scrubber-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.time-readout {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    min-width: 40px;
+}
+
+.track-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: #090d14;
+    border-radius: 3px;
+    outline: none;
+}
+
+.track-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 8px var(--accent-cyan);
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   Footer Telemetry
+   ========================================================================== */
+.studio-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    background: #090c13;
+    border: 1px solid var(--chassis-border);
+    border-radius: 12px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+}
+
+.telemetry-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.telemetry-label {
+    color: var(--text-dim);
+}
+
+.telemetry-value {
+    color: var(--text-muted);
+}
+
+.telemetry-value.highlight {
+    color: var(--accent-cyan);
+}
+
+.vu-mini-track {
+    width: 80px;
+    height: 6px;
+    background: #141926;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.vu-mini-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d9f5, #00ff88);
+    transition: width 0.1s ease;
+}
+
+/* ==========================================================================
+   Hardware Routing Modal
+   ========================================================================== */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-dialog {
+    background: #121622;
+    border: 1px solid #2a344d;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+}
+
+.modal-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--chassis-border);
+}
+
+.modal-top h3 {
+    font-size: 16px;
+    color: #fff;
+}
+
+.modal-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.btn-close-modal {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.modal-content {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.hardware-alert-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 217, 245, 0.08);
+    border: 1px solid rgba(0, 217, 245, 0.2);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--accent-cyan);
+}
+
+.dot-online {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+}
+
+.modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.modal-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.modal-field label {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.modal-select {
+    background: #090c13;
+    border: 1px solid var(--chassis-border);
+    border-radius: 8px;
+    color: #fff;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+}
+
+.modal-bottom {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--chassis-border);
+    background: #0b0e16;
+}
+
+.btn-modal-cancel {
+    background: transparent;
+    border: 1px solid var(--chassis-border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.btn-modal-save {
+    background: var(--accent-cyan);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    color: #06151f;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   Studio Telemetry & Live Tuner Deck
+   ========================================================================== */
+.studio-telemetry-deck {
+    display: grid;
+    grid-template-columns: 220px 1fr 220px;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 992px) {
+    .studio-telemetry-deck {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Level Meter Cards */
+.meter-card {
+    background: #0d111a;
+    border: 1px solid var(--chassis-border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.meter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.meter-title {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+}
+
+.clip-badge {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 45, 85, 0.15);
+    color: #555;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+}
+
+.clip-badge.active {
+    background: #ff2a55;
+    color: #fff;
+    border-color: #ff5577;
+    box-shadow: 0 0 12px rgba(255, 42, 85, 0.9);
+    animation: clipBlink 0.3s infinite alternate;
+}
+
+@keyframes clipBlink {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; transform: scale(1.05); }
+}
+
+.vu-meter-bar-wrap {
+    margin-bottom: 10px;
+}
+
+.vu-scale-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: #4b586e;
+    margin-bottom: 4px;
+}
+
+.vu-track {
+    width: 100%;
+    height: 14px;
+    background: #07090f;
+    border-radius: 7px;
+    border: 1px solid #1a2336;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.vu-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d9f5 0%, #10b981 60%, #ff9e00 85%, #ff2a55 98%);
+    border-radius: 7px;
+    transition: width 0.05s ease;
+}
+
+.vu-fill.output {
+    background: linear-gradient(90deg, #10b981 0%, #ff9e00 75%, #ff2a55 96%);
+}
+
+.vu-peak-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #fff;
+    box-shadow: 0 0 4px #fff;
+    transition: left 0.1s ease;
+}
+
+.meter-readout {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    text-align: right;
+}
+
+.meter-readout .unit {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+/* Master Live Guitar Tuner Card */
+.live-tuner-card {
+    background: radial-gradient(circle at 50% 20%, #131926 0%, #0a0d14 100%);
+    border: 1px solid var(--chassis-border);
+    border-radius: 12px;
+    padding: 16px 22px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.tuner-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.tuner-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tuner-jewel {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #ff9e00;
+    box-shadow: 0 0 8px #ff9e00;
+}
+
+.tuner-brand {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #cdd6e5;
+}
+
+.tuner-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-tuner-mic {
+    background: #141a27;
+    border: 1px solid var(--chassis-border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 11px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-tuner-mic:hover, .btn-tuner-mic.active {
+    background: rgba(0, 217, 245, 0.15);
+    border-color: var(--accent-cyan);
+    color: #00d9f5;
+}
+
+.tuner-lock-badge {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(16, 185, 129, 0.12);
+    color: #4b6058;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.tuner-lock-badge.active {
+    background: #10b981;
+    color: #042416;
+    border-color: #34d399;
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.9);
+}
+
+.tuner-main-display {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.tuner-note-display {
+    display: flex;
+    align-items: baseline;
+    min-width: 85px;
+    justify-content: center;
+}
+
+.tuner-note {
+    font-family: 'Cinzel', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+    transition: color 0.15s ease;
+}
+
+.tuner-note.in-tune {
+    color: #10b981;
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+}
+
+.tuner-octave {
+    font-size: 18px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-left: 3px;
+}
+
+.tuner-gauge-wrap {
+    flex: 1;
+}
+
+.tuner-cents-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: #5d6d84;
+    margin-bottom: 4px;
+}
+
+.tuner-cents-scale .zero-tick {
+    color: #10b981;
+    font-weight: 700;
+}
+
+.tuner-gauge-bar {
+    width: 100%;
+    height: 12px;
+    background: #080b12;
+    border: 1px solid #1c263c;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.tuner-center-target {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(50% - 2px);
+    width: 4px;
+    background: rgba(16, 185, 129, 0.4);
+}
+
+.tuner-needle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 2px;
+    background: #ff9e00;
+    box-shadow: 0 0 8px #ff9e00;
+    transform: translateX(-50%);
+    transition: left 0.08s ease, background 0.15s ease;
+}
+
+.tuner-needle.in-tune {
+    background: #10b981;
+    box-shadow: 0 0 12px #10b981;
+}
+
+.tuner-needle.flat {
+    background: #ffaa00;
+}
+
+.tuner-needle.sharp {
+    background: #ff3b30;
+}
+
+.tuner-cents-readout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: #fff;
+}
+
+.freq-tag {
+    font-size: 11px;
+    color: #7d8ea5;
+}
+
+/* ==========================================================================
+   Pedalboard & Signal Chain Rack
+   ========================================================================== */
+.pedalboard-section {
+    background: #090c14;
+    border: 1px solid var(--chassis-border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.pedalboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 12px;
+}
+
+.pedalboard-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pedalboard-icon {
+    font-size: 24px;
+}
+
+.pedalboard-header h3 {
+    font-size: 16px;
+    color: #fff;
+    margin: 0 0 2px 0;
+    font-weight: 700;
+}
+
+.pedalboard-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.btn-add-gear {
+    background: linear-gradient(180deg, #1f2a3e 0%, #151d2c 100%);
+    border: 1px solid rgba(0, 217, 245, 0.4);
+    color: #00d9f5;
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-gear:hover {
+    background: rgba(0, 217, 245, 0.2);
+    border-color: #00d9f5;
+    box-shadow: 0 0 12px rgba(0, 217, 245, 0.3);
+}
+
+.pedalboard-rack {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+}
+
+/* Stompbox Card Styling */
+.pedal-card {
+    min-width: 170px;
+    max-width: 200px;
+    border-radius: 12px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    position: relative;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.pedal-card.bypassed {
+    opacity: 0.55;
+    filter: grayscale(0.4);
+}
+
+.pedal-card.theme-distortion {
+    background: linear-gradient(180deg, #1b4d2e 0%, #0d2817 100%);
+    border-color: #2b7a48;
+}
+
+.pedal-card.theme-chorus {
+    background: linear-gradient(180deg, #1a426e 0%, #0c213a 100%);
+    border-color: #2e6cb3;
+}
+
+.pedal-card.theme-delay {
+    background: linear-gradient(180deg, #443c2c 0%, #221e16 100%);
+    border-color: #7a6c50;
+}
+
+.pedal-card.theme-reverb, .pedal-card.theme-space {
+    background: linear-gradient(180deg, #2f3442 0%, #171a21 100%);
+    border-color: #4f586f;
+}
+
+.pedal-card.theme-compressor {
+    background: linear-gradient(180deg, #5c1e1e 0%, #2f0e0e 100%);
+    border-color: #9c3333;
+}
+
+.pedal-card.theme-noisegate {
+    background: linear-gradient(180deg, #1a1a1a 0%, #080808 100%);
+    border-color: #3d3d3d;
+}
+
+.pedal-card.theme-amp {
+    background: linear-gradient(180deg, #2b1f14 0%, #150f09 100%);
+    border-color: var(--accent-amber);
+    min-width: 210px;
+}
+
+.pedal-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.pedal-type-tag {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+}
+
+.btn-remove-gear {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btn-remove-gear:hover {
+    color: #ff2a55;
+}
+
+.pedal-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 2px;
+    line-height: 1.2;
+}
+
+.pedal-model {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 12px;
+}
+
+/* Stompbox Knobs Rack */
+.pedal-knobs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.pedal-knob-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.pedal-knob-label {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+}
+
+.pedal-slider {
+    width: 100%;
+    height: 4px;
+    accent-color: #ff9e00;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.pedal-knob-val {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: #fff;
+}
+
+/* Footswitch Bottom */
+.pedal-footswitch-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 10px;
+}
+
+.footswitch-led {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #333;
+    transition: all 0.2s ease;
+}
+
+.footswitch-led.on {
+    background: #ff2a55;
+    box-shadow: 0 0 10px #ff2a55;
+}
+
+.footswitch-led.on.green {
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
+}
+
+.footswitch-led.on.blue {
+    background: #00d9f5;
+    box-shadow: 0 0 10px #00d9f5;
+}
+
+.footswitch-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ddd 0%, #777 80%, #444 100%);
+    border: 3px solid #222;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6), inset 0 2px 3px #fff;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.footswitch-btn:active {
+    transform: scale(0.92);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), inset 0 1px 2px #fff;
+}
+
+.pedal-connector-arrow {
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 18px;
+}
+
+/* Add Gear Modal */
+.add-gear-dialog {
+    max-width: 720px;
+}
+
+.gear-tabs-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.gear-tab-btn {
+    background: #121724;
+    border: 1px solid var(--chassis-border);
+    border-radius: 8px;
+    padding: 8px 18px;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.gear-tab-btn.active {
+    background: rgba(0, 217, 245, 0.15);
+    border-color: var(--accent-cyan);
+    color: #fff;
+    font-weight: 700;
+}
+
+.gear-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.gear-picker-item {
+    background: #111622;
+    border: 1px solid var(--chassis-border);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+}
+
+.gear-picker-item:hover {
+    border-color: var(--accent-amber);
+    background: #171d2c;
+    transform: translateY(-2px);
+}
+
+.gear-picker-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.gear-picker-model {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.btn-insert-gear {
+    background: #1e283b;
+    border: 1px solid rgba(255, 158, 0, 0.4);
+    color: var(--accent-amber);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-insert-gear:hover {
+    background: var(--accent-amber);
+    color: #0b0e14;
+}

@@ -1,0 +1,45 @@
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+
+# Build Artifacts & Binaries
+build/
+cmake-build-*/
+*.o
+*.obj
+*.dylib
+*.so
+*.dll
+*.a
+*.lib
+
+# OS & Editor Files
+.DS_Store
+*/.DS_Store
+**/.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+*.egg-info/
+.venv/
+venv/
+ENV/
+env/
+
+# Tool & Cache Dirs
+.serena/
+.agents/results/
+.agents/state/
+.agents/backup/

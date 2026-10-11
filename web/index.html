@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conductor AI - TONE3000 Studio Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="studio-wrapper">
+        <!-- Top Navigation Bar -->
+        <header class="studio-header">
+            <div class="header-brand">
+                <div class="brand-jewel">
+                    <span class="jewel-core" id="masterJewel"></span>
+                </div>
+                <div class="brand-titles">
+                    <h1>CONDUCTOR <span>STUDIO</span></h1>
+                    <span class="brand-tagline">Direct DI & TONE3000 Neural Modeler Engine</span>
+                </div>
+            </div>
+
+            <!-- Master Signal Routing Switch -->
+            <div class="master-routing-control">
+                <div class="routing-switch-card">
+                    <span class="routing-label">SIGNAL PATH</span>
+                    <div class="routing-toggle-group">
+                        <button id="modeDirectBtn" class="mode-btn" title="Route guitar direct (Pure clean DI, zero DSP overhead, zero latency)">
+                            <span class="mode-icon">🔌</span>
+                            <span class="mode-text">DIRECT DI</span>
+                        </button>
+                        <button id="modeTone3000Btn" class="mode-btn active" title="Route guitar through authentic TONE3000 Neural Amp capture">
+                            <span class="mode-icon">⚡</span>
+                            <span class="mode-text">TONE3000</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Hardware & Status Actions -->
+            <div class="header-actions">
+                <div class="engine-badge" id="latencyIndicator">
+                    <span class="pulse-dot"></span>
+                    <span id="latencyText">0.2 ms Latency</span>
+                </div>
+                <button id="openHardwareBtn" class="btn-hardware" title="Configure Audio Input & Output Channels">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Audio Routing</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="studio-main">
+            <!-- Studio Telemetry & Live Guitar Tuner Deck -->
+            <section class="studio-telemetry-deck">
+                <!-- 1. Input Level Meter & Clipping Detector -->
+                <div class="meter-card input-meter-card">
+                    <div class="meter-header">
+                        <span class="meter-title">GUITAR IN</span>
+                        <span id="inputClipBadge" class="clip-badge">CLIP</span>
+                    </div>
+                    <div class="vu-meter-bar-wrap">
+                        <div class="vu-scale-ticks">
+                            <span>0</span><span>-6</span><span>-12</span><span>-24</span><span>-48</span>
+                        </div>
+                        <div class="vu-track">
+                            <div id="inputVuBar" class="vu-fill" style="width: 10%;"></div>
+                            <div id="inputPeakMarker" class="vu-peak-line" style="left: 10%;"></div>
+                        </div>
+                    </div>
+                    <div class="meter-readout">
+                        <span id="inputDbReadout">-60.0</span> <span class="unit">dBFS</span>
+                    </div>
+                </div>
+
+                <!-- 2. Master Live Guitar Tuner -->
+                <div class="live-tuner-card" id="liveTunerCard">
+                    <div class="tuner-top-bar">
+                        <div class="tuner-title-group">
+                            <span class="tuner-jewel" id="tunerJewel"></span>
+                            <span class="tuner-brand">LIVE GUITAR TUNER</span>
+                        </div>
+                        <div class="tuner-actions">
+                            <button id="browserMicBtn" class="btn-tuner-mic" title="Use Browser Microphone for Tuning">
+                                <span>🎙 Browser Mic</span>
+                            </button>
+                            <span id="tunerLockBadge" class="tuner-lock-badge">IN TUNE</span>
+                        </div>
+                    </div>
+
+                    <div class="tuner-main-display">
+                        <div class="tuner-note-display">
+                            <span id="tunerNote" class="tuner-note">--</span>
+                            <span id="tunerOctave" class="tuner-octave"></span>
+                        </div>
+
+                        <!-- Cents Gauge Needle Scale (-50 to +50 cents) -->
+                        <div class="tuner-gauge-wrap">
+                            <div class="tuner-cents-scale">
+                                <span>-50</span>
+                                <span>-25</span>
+                                <span class="zero-tick">▼ 0</span>
+                                <span>+25</span>
+                                <span>+50</span>
+                            </div>
+                            <div class="tuner-gauge-bar">
+                                <div class="tuner-center-target"></div>
+                                <div id="tunerNeedle" class="tuner-needle" style="left: 50%;"></div>
+                            </div>
+                            <div class="tuner-cents-readout">
+                                <span id="tunerCentsVal">0.0</span> <span class="unit">cents</span>
+                                <span class="freq-tag" id="tunerFreqReadout">-- Hz</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Output Level Meter & Clipping Detector -->
+                <div class="meter-card output-meter-card">
+                    <div class="meter-header">
+                        <span class="meter-title">MONITOR OUT</span>
+                        <span id="outputClipBadge" class="clip-badge">CLIP</span>
+                    </div>
+                    <div class="vu-meter-bar-wrap">
+                        <div class="vu-scale-ticks">
+                            <span>0</span><span>-6</span><span>-12</span><span>-24</span><span>-48</span>
+                        </div>
+                        <div class="vu-track">
+                            <div id="outputVuBar" class="vu-fill output" style="width: 15%;"></div>
+                            <div id="outputPeakMarker" class="vu-peak-line" style="left: 15%;"></div>
+                        </div>
+                    </div>
+                    <div class="meter-readout">
+                        <span id="outputDbReadout">-60.0</span> <span class="unit">dBFS</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Studio Amp Faceplate (Main Centerpiece) -->
+            <section class="amp-chassis" id="ampChassis">
+                <div class="chassis-trim">
+                    <div class="corner-screw top-left"></div>
+                    <div class="corner-screw top-right"></div>
+                    <div class="corner-screw bottom-left"></div>
+                    <div class="corner-screw bottom-right"></div>
+                </div>
+
+                <div class="faceplate">
+                    <!-- Amp Header Badge Row -->
+                    <div class="faceplate-top-bar">
+                        <div class="amp-identity">
+                            <span class="amp-vintage-badge">VALVE STATE DSP</span>
+                            <div class="amp-title-group">
+                                <h2 id="activePatchTitle">Marshall JCM800 2203 (1981 Cranked Lead)</h2>
+                                <span class="amp-subtitle" id="activePatchMeta">ToneMaster • High Gain British Stack • Authentic NAM Capture</span>
+                            </div>
+                        </div>
+
+                        <!-- Direct DI Bypass Warning Banner (Shown only when in Direct Mode) -->
+                        <div id="directBanner" class="direct-banner" style="display: none;">
+                            <span class="direct-badge">PURE DI BYPASS</span>
+                            <span class="direct-desc">DSP engine bypassed • True Direct Instrument Audio • Zero Latency</span>
+                        </div>
+
+                        <div class="amp-pilot-light active" id="ampPilotLight" title="Power / Signal Active Indicator">
+                            <span class="pilot-glass"></span>
+                            <span class="pilot-label">PILOT</span>
+                        </div>
+                    </div>
+
+                    <!-- 6 Physical Tonestack Knobs -->
+                    <div class="tonestack-rack" id="tonestackRack">
+                        <!-- Knob 1: Gain -->
+                        <div class="knob-cell" data-param="gain_db">
+                            <div class="knob-label">GAIN</div>
+                            <div class="rotary-slider-wrap">
+                                <input type="range" class="rotary-slider" id="knob_gain" min="-12" max="24" step="0.5" value="12">
+                                <div class="knob-visual-cap"></div>
+                            </div>
+                            <div class="knob-val-badge"><span id="val_gain">12.0</span> dB</div>
+                            <div class="knob-subtext">Preamp Drive</div>
+                        </div>
+
+                        <!-- Knob 2: Bass -->
+                        <div class="knob-cell" data-param="bass_db">
+                            <div class="knob-label">BASS</div>
+                            <div class="rotary-slider-wrap">
+                                <input type="range" class="rotary-slider" id="knob_bass" min="-12" max="12" step="0.5" value="2.0">
+                                <div class="knob-visual-cap"></div>
+                            </div>
+                            <div class="knob-val-badge"><span id="val_bass">+2.0</span> dB</div>
+                            <div class="knob-subtext">180 Hz Shelf</div>
+                        </div>
+
+                        <!-- Knob 3: Middle -->
+                        <div class="knob-cell" data-param="mid_db">
+                            <div class="knob-label">MIDDLE</div>
+                            <div class="rotary-slider-wrap">
+                                <input type="range" class="rotary-slider" id="knob_mid" min="-12" max="12" step="0.5" value="1.0">
+                                <div class="knob-visual-cap"></div>
+                            </div>
+                            <div class="knob-val-badge"><span id="val_mid">+1.0</span> dB</div>
+                            <div class="knob-subtext">750 Hz Peak</div>
+                        </div>
+
+                        <!-- Knob 4: Treble -->
+                        <div class="knob-cell" data-param="treble_db">
+                            <div class="knob-label">TREBLE</div>
+                            <div class="rotary-slider-wrap">
+                                <input type="range" class="rotary-slider" id="knob_treble" min="-12" max="12" step="0.5" value="3.0">
+                                <div class="knob-visual-cap"></div>
+                            </div>
+                            <div class="knob-val-badge"><span id="val_treble">+3.0</span> dB</div>
+                            <div class="knob-subtext">3.5 kHz Shelf</div>
+                        </div>
+
+                        <!-- Knob 5: Presence -->
+                        <div class="knob-cell" data-param="presence_db">
+                            <div class="knob-label">PRESENCE</div>
+                            <div class="rotary-slider-wrap">
+                                <input type="range" class="rotary-slider" id="knob_presence" min="-12" max="12" step="0.5" value="2.0">
+                                <div class="knob-visual-cap"></div>
+                            </div>
+                            <div class="knob-val-badge"><span id="val_presence">+2.0</span> dB</div>
+                            <div class="knob-subtext">5.5 kHz Air</div>
+                        </div>
+
+                        <!-- Knob 6: Volume -->
+                        <div class="knob-cell" data-param="volume_db">
+                            <div class="knob-label">MASTER</div>
+                            <div class="rotary-slider-wrap">
+                                <input type="range" class="rotary-slider master" id="knob_volume" min="-24" max="6" step="0.5" value="0.0">
+                                <div class="knob-visual-cap"></div>
+                            </div>
+                            <div class="knob-val-badge"><span id="val_volume">0.0</span> dB</div>
+                            <div class="knob-subtext">Headroom Level</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interactive Pedalboard & Signal Chain Rack -->
+            <section class="pedalboard-section" id="pedalboardSection">
+                <div class="pedalboard-header">
+                    <div class="pedalboard-title-group">
+                        <div class="pedalboard-icon">🎛</div>
+                        <div>
+                            <h3>TONE3000 Signal Chain & Pedalboard</h3>
+                            <p class="pedalboard-sub">Real-time stompboxes, valve amplifier stage, and acoustic spaces</p>
+                        </div>
+                    </div>
+                    <div class="pedalboard-controls">
+                        <button id="openAddGearBtn" class="btn-add-gear" title="Add Stompbox or Space to Chain">
+                            <span>+ Add Stompbox / Space</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Pedalboard Rack (Stompboxes -> Amp -> Spaces) -->
+                <div class="pedalboard-rack" id="pedalboardRack">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </section>
+
+            <!-- AI Sound Architect & Springboard Section -->
+            <section class="ai-architect-section">
+                <div class="architect-header">
+                    <div class="architect-title">
+                        <span class="spark-icon">✨</span>
+                        <h3>AI Tone Architect & Prompt Springboard</h3>
+                    </div>
+                    <span class="architect-hint">Ask for tone, genre, vibe, or gear tweaks</span>
+                </div>
+
+                <div class="prompt-input-row">
+                    <div class="input-container">
+                        <input type="text" id="commandInput" placeholder="Describe a tone (e.g., 'glassy Stevie Ray Vaughan blues clean with punch', '90s Seattle grunge crunch')...">
+                        <button id="submitBtn" class="btn-synthesize">
+                            <span>Synthesize</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instant Springboard Chips -->
+                <div class="springboard-chips" id="springboardChips">
+                    <button class="chip" data-prompt="cranked 1980s rock lead guitar">🎸 80s Rock Lead</button>
+                    <button class="chip" data-prompt="clean warm vintage tube amp with glassy chime">✨ Glassy Tube Clean</button>
+                    <button class="chip" data-prompt="punchy modern high gain metal rhythm">⚡ Modern High-Gain</button>
+                    <button class="chip" data-prompt="warm vintage blues with mild edge of breakup">🌓 Vintage Blues Breakup</button>
+                    <button class="chip" data-prompt="more gain and cut the treble">🔥 More Gain & Bite</button>
+                    <button class="chip" data-prompt="darker and warmer with less presence">🌙 Darker & Warmer</button>
+                    <button class="chip" data-prompt="direct clean di bypass">🔌 Switch to Direct DI</button>
+                </div>
+
+                <!-- AI Rationale Banner (Visible when AI generates/tunes tone) -->
+                <div id="aiRationaleCard" class="ai-rationale-card" style="display: none;">
+                    <div class="rationale-top">
+                        <span class="ai-badge">AI SOUND DESIGNER RATIONALE</span>
+                        <div class="emotional-tags-row" id="emotionalTagsRow"></div>
+                    </div>
+                    <p id="aiRationaleText" class="rationale-body"></p>
+                </div>
+            </section>
+
+            <!-- TONE3000 Patch Browser & Library -->
+            <section class="patch-browser-section">
+                <div class="browser-header">
+                    <div class="browser-title-group">
+                        <h3>🌐 TONE3000 Authentic Neural Captures</h3>
+                        <p>Direct authentic Neural Amp Modeler captures with high-fidelity tonestack</p>
+                    </div>
+                    <div class="browser-search-wrap">
+                        <input type="text" id="patchSearchInput" placeholder="Search TONE3000 library (e.g. 'Plexi', 'Twin', 'Rectifier', 'AC30')...">
+                        <span id="searchSpinner" class="search-spinner" style="display: none;">🔄</span>
+                    </div>
+                </div>
+
+                <!-- Curated Patches Grid -->
+                <div class="patches-grid" id="patchesGrid">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </section>
+
+            <!-- Test Audio Scrubber (Audition Tracks Without Guitar) -->
+            <section class="test-scrubber-section">
+                <div class="scrubber-card">
+                    <div class="scrubber-header">
+                        <div class="scrubber-title">
+                            <span class="icon">🎧</span>
+                            <strong>DRY GUITAR AUDITION SCRUBBER</strong>
+                            <span class="subtext">(Audition Direct DI vs TONE3000 patches without plugging in)</span>
+                        </div>
+                        <div class="scrubber-controls">
+                            <select id="testFileSelect" class="test-select" title="Select Dry Guitar Track"></select>
+                            <button id="playTestBtn" class="btn-scrubber-play">▶ Play Track</button>
+                            <button id="loopTestBtn" class="btn-scrubber-loop active">🔁 Loop</button>
+                            <button id="processToggleBtn" class="btn-scrubber-mode">⚡ DSP Processed</button>
+                        </div>
+                    </div>
+
+                    <div class="scrubber-bar-row">
+                        <span id="testCurrentTime" class="time-readout">00:00</span>
+                        <input type="range" id="audioScrubber" class="track-slider" min="0" max="100" value="0" step="0.1">
+                        <span id="testDuration" class="time-readout">00:00</span>
+                    </div>
+                    <audio id="testAudioElement" style="display: none;"></audio>
+                </div>
+            </section>
+        </main>
+
+        <!-- Studio Footer: Hardware VU Telemetry & Stats -->
+        <footer class="studio-footer">
+            <div class="telemetry-item">
+                <span class="telemetry-label">GUITAR LINE-IN:</span>
+                <div class="vu-mini-track"><div id="guitarVu" class="vu-mini-fill" style="width: 25%;"></div></div>
+            </div>
+            <div class="telemetry-item">
+                <span class="telemetry-label">DSP CROSSFADE:</span>
+                <span class="telemetry-value">10.6 ms Smooth Equal-Power</span>
+            </div>
+            <div class="telemetry-item">
+                <span class="telemetry-label">SIGNAL INTEGRITY:</span>
+                <span class="telemetry-value highlight">32-bit Float • Headroom Protected</span>
+            </div>
+            <div class="telemetry-item">
+                <span class="telemetry-label">ENGINE:</span>
+                <span class="telemetry-value" id="engineStatusTag">TONE3000 Active</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Hardware Audio Device & Channel Setup Modal -->
+    <div id="hardwareModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-top">
+                <div>
+                    <h3>⚙ Audio Interface & Hardware Routing</h3>
+                    <p class="modal-sub">Route your audio interface line inputs and monitor outputs</p>
+                </div>
+                <button id="closeHardwareModal" class="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div class="hardware-alert-banner" id="hardwareStatusBanner">
+                    <span class="dot-online"></span>
+                    <span id="hardwareStatusText">Audio hardware stream ready</span>
+                </div>
+
+                <div class="modal-field">
+                    <label for="inputDevSelect"><strong>Audio Input Interface:</strong></label>
+                    <select id="inputDevSelect" class="modal-select"></select>
+                </div>
+
+                <div class="modal-field-row">
+                    <div class="modal-field">
+                        <label for="guitarChSelect"><strong>🎸 Guitar Instrument Input:</strong></label>
+                        <select id="guitarChSelect" class="modal-select">
+                            <option value="0">Channel 1</option>
+                            <option value="1" selected>Channel 2</option>
+                        </select>
+                    </div>
+                    <div class="modal-field">
+                        <label for="micChSelect"><strong>🎙 Talkback Voice Mic:</strong></label>
+                        <select id="micChSelect" class="modal-select">
+                            <option value="0" selected>Channel 1</option>
+                            <option value="-1">Disabled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-field">
+                    <label for="outputDevSelect"><strong>Audio Output / Monitors:</strong></label>
+                    <select id="outputDevSelect" class="modal-select"></select>
+                </div>
+            </div>
+            <div class="modal-bottom">
+                <button id="cancelHardwareBtn" class="btn-modal-cancel">Cancel</button>
+                <button id="saveHardwareBtn" class="btn-modal-save">Apply Hardware Routing</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add TONE3000 Gear Modal -->
+    <div id="addGearModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-dialog add-gear-dialog">
+            <div class="modal-top">
+                <div>
+                    <h3>➕ Add TONE3000 Gear to Chain</h3>
+                    <p class="modal-sub">Select an authentic stompbox pedal or acoustic space</p>
+                </div>
+                <button id="closeAddGearModal" class="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div class="gear-tabs-bar">
+                    <button class="gear-tab-btn active" id="tabStompboxes" data-tab="stompbox">🎸 Stompbox Pedals</button>
+                    <button class="gear-tab-btn" id="tabSpaces" data-tab="space">🏛 Spaces & Cabinets</button>
+                </div>
+                <div class="gear-picker-grid" id="gearPickerGrid">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Migrated by oma migration 008 — model_preset single-file config
+mcp:
+  devtools_browsers:
+    - aside
+vendors:
+  - claude
+  - codex
+  - copilot
+  - cursor
+  - grok
+  - antigravity
+  - qwen
+  - zcode
+providers:
+  web: native
+  code_intelligence: serena
+  semantic_memory: agentmemory
+model_preset: antigravity
+
+# Added by oma migration 022 — moved from .agents/skills/*/config/*.yaml, which `oma update` overwrites. Edit freely.
+video:
+  default_compositor: hyperframes
+  providers:
+    compositor:
+      order:
+        - hyperframes
+        - mpt

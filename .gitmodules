@@ -1,0 +1,8 @@
+[submodule "Libs/JUCE"]
+	path = Libs/JUCE
+	url = https://github.com/juce-framework/JUCE.git
+	ignore = dirty
+[submodule "Libs/NeuralAmpModelerCore"]
+	path = Libs/NeuralAmpModelerCore
+	url = https://github.com/sdatkinson/NeuralAmpModelerCore.git
+	ignore = dirty

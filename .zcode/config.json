@@ -1,0 +1,12 @@
+{
+  "mcp": {
+    "servers": {
+      "aside": {
+        "command": "aside",
+        "args": [
+          "mcp"
+        ]
+      }
+    }
+  }
+}

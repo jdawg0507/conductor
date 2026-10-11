@@ -1,0 +1,11 @@
+[mcp_servers.serena]
+command = "oma"
+args = [ "bridge", "--context", "oma" ]
+
+[mcp_servers.serena.env]
+SERENA_LOG_LEVEL = "info"
+
+[mcp_servers.aside]
+command = "aside"
+args = [ "mcp" ]
+
